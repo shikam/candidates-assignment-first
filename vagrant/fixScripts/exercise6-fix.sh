@@ -1,23 +1,27 @@
 #!/bin/bash
-#add fix to exercise6-fix here
+#e6-fix here
 
-if [ $# < 2 ];
+if [ $# -lt 2 ];
 then
-    echo "Need insert more 1 parameters"
+    echo "Need to insert at least 2 parameter"
+        echo "exercise6-fix.sh [ file1 [, file2, ..], dest_dir ]"
     exit 2
 
 else
-ARGS=("$@")
-counter=0
-destination=${ARGS[-1]}
-for file in "${ARGS[@]}";
-do
-sudo scp $file vagrant@server2:/$destination
-let count = du $file | cut -c 1-1
-#echo $count
-let countet = $(($counter + $count))
-#counter = counter + count;
-done
+        ARGS=("$@")
+        #AR=ARGS[${ARGS[@]}-1]
+        unset ARGS[${#ARGS[@]}-1]
+        counter=0
+        fileSize=0
+        dest="${@: -1}"
+        for file in "${ARGS[@]}";
+        do
+                scp  $file vagrant@server2:/$dest
+                fileSize="$(stat --printf="%s" "$file")"
+                counter=$((fileSize + counter))
+        done
 
-echo $counter
+        echo $counter
 fi
+
+
